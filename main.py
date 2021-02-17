@@ -1,15 +1,20 @@
+from logging import debug
 from cloud_drives.google import GoogleDrive
 from config.google import Config
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+import uvicorn
 
 app = FastAPI()
 
 google_conf = {
     "CLIENT_ID_JSON" : "token/client_id.json",
     "STORAGE_JSON": "token/storage.json",
-    "SCOPES": ['https://www.googleapis.com/auth/drive.readonly.metadata']
+    "CREDENTIALS_JSON": "token/client_id.json",
+    "SCOPES": [
+        "https://www.googleapis.com/auth/drive"
+        ]
 }
 
 config = Config(**google_conf)
@@ -21,5 +26,19 @@ async def list_files():
     f = await gdrive.list_files()
     return JSONResponse(status_code=200, content=f)
 
+@app.get("/upload_file")
+async def upload_file():
+    resp = await gdrive.upload_file(
+        filename = "photo.jpg",
+        filepath = "files/photo.jpg",
+    )
+    return JSONResponse(status_code=200, content=resp)
+
+@app.get("/create_folder")
+async def create_folder():
+    resp = await gdrive.create_folder(folder_name="Examples")
+    return JSONResponse(status_code=200, content=resp)
 
 
+if __name__ == "__main___":
+    uvicorn.run(app, debug=True)
