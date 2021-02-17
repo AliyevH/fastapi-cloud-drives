@@ -88,7 +88,7 @@ class GoogleDrive:
         """
         try:
             __file = self.drive_service.files().list(
-                q="fullText contains 'docker'", 
+                q=q, 
                 corpora=corpora,
                 includeItemsFromAllDrives=includeItemsFromAllDrives,
                 supportsAllDrives=supportsAllDrives,
