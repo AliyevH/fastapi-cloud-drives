@@ -1,6 +1,6 @@
 from logging import debug
-from fastapi_cloud_drives.FastAPIGoogle import GoogleDrive
-from fastapi_cloud_drives.config import GDriveConfig
+from fastapi_cloud_drives.fastapi_google import GoogleDrive
+from fastapi_cloud_drives.config import GoogleDriveConfig
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -10,14 +10,12 @@ app = FastAPI()
 
 google_conf = {
     "CLIENT_ID_JSON" : "token/client_id.json",
-    "STORAGE_JSON": "token/storage.json",
-    "CREDENTIALS_JSON": "token/client_id.json",
     "SCOPES": [
         "https://www.googleapis.com/auth/drive"
         ]
 }
 
-config = GDriveConfig(**google_conf)
+config = GoogleDriveConfig(**google_conf)
 
 gdrive = GoogleDrive(config)
 

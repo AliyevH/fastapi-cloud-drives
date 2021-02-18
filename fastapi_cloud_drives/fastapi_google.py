@@ -11,10 +11,11 @@ from google.auth.transport.requests import Request
 
 class GoogleDrive:   
     def __init__(self, conf):
-        self.STORAGE_JSON = conf.STORAGE_JSON
+        self.STORAGE_JSON = "storage.json"
         self.CLIENT_ID_JSON = conf.CLIENT_ID_JSON
         self.SCOPES = conf.SCOPES
         self.creds = None
+        
         self.auth()
         
 
