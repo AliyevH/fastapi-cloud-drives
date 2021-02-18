@@ -7,6 +7,7 @@ __pycache__/
 *.so
 token
 .vscode
+files
 
 # Distribution / packaging
 .Python
