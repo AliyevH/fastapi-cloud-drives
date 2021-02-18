@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Module for FastAPI to work with cloud drives"
 authors = ["Hasan Aliyev <hasan.aliyev.555@gmail.com>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
