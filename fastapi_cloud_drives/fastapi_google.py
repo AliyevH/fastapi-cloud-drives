@@ -15,11 +15,13 @@ class GoogleDrive:
         self.CLIENT_ID_JSON = conf.CLIENT_ID_JSON
         self.SCOPES = conf.SCOPES
         self.creds = None
-        
+
         self.auth()
         
 
     def auth(self):
+        """[Google Drive API Authentication]
+        """
         self.store = file.Storage(self.STORAGE_JSON)
         self.creds = self.store.get()
 
@@ -29,27 +31,10 @@ class GoogleDrive:
 
         self.build_service()
 
-    # def auth(self):
-        
-    #     if os.path.exists('token/token.pickle'):
-    #         with open('token/token.pickle', 'rb') as token:
-    #             self.creds = pickle.load(token)
-
-    #     # If there are no (valid) credentials available, let the user log in.
-    #     if not self.creds or not self.creds.valid:
-    #         if self.creds and self.creds.expired and self.creds.refresh_token:
-    #             self.creds.refresh(Request())
-    #         else:
-    #             flow = InstalledAppFlow.from_client_secrets_file(
-    #                 'token/client_id.json', self.SCOPES)
-    #             self.creds = flow.run_local_server(port=0)
-    #         # Save the credentials for the next run
-    #         with open('token/token.pickle', 'wb') as token:
-    #             pickle.dump(self.creds, token)
-
-    #     self.build_service()
 
     def build_service(self):
+        """[Building drive v3]
+        """
         self.drive_service = build('drive', 'v3', credentials=self.creds)
 
 
@@ -67,27 +52,33 @@ class GoogleDrive:
         Returns:
             [list of dictionary]: [{}, {}] or str(err)
         
-        Possible options:
-
-        q[str]: "mimeType='image/jpeg'"
+        Args:
+            q (str): [
+                "mimeType='image/jpeg'"
                 "name contains 'Resume'"
                 Default= ""
+                ]
 
-        corpora[str]:  user, drive, allDrives
+        corpora (str):  [user, drive, allDrives]
 
-        includeItemsFromAllDrives[bool]:
+        includeItemsFromAllDrives (bool):
 
-        supportsAllDrives[bool]: Default: False
+        supportsAllDrives (bool): [Default is False]
 
-        pageSize[int]: 1-1000, Default 100
+        pageSize (int): [1-1000, Default 100]
 
-        spaces[str]: drive, appDataFolder, photos
+        spaces (str): [drive, appDataFolder, photos]
 
-        fields[str]:        
+        fields (str):        
 
-        orderBy[str]: createdTime, folder, modifiedByMeTime,modifiedTime, 
-                      name, name_natural, quotaBytesUsed, recency, sharedWithMeTime,
-                      starred, viewedByMeTime, desc
+        orderBy (str): [
+            createdTime, folder, modifiedByMeTime,modifiedTime, 
+            name, name_natural, quotaBytesUsed, recency, sharedWithMeTime,
+            starred, viewedByMeTime, desc
+            ]
+
+        Returns:
+            [List of files metadata]: [All files metadata is dictionary]
         """
         try:
             __file = self.drive_service.files().list(
@@ -105,6 +96,16 @@ class GoogleDrive:
 
 
     async def upload_file(self, filename: str, filepath: str, mimetype=None):
+        """[Upload file to google drive]
+
+        Args:
+            filename (str): [fielname is used to create file in google drive]
+            filepath (str): [filepath to file which to upload]
+            mimetype ([type], optional): [Google detects it automatically]. Defaults to None.
+
+        Returns:
+            [str]: [ID of file created in Google Drive]
+        """
         __file = self.drive_service.files()
 
         file_metadata = {"name" : filename}
@@ -125,6 +126,14 @@ class GoogleDrive:
 
 
     async def create_folder(self, folder_name: str):
+        """[Create folder in Google Drive]
+
+        Args:
+            folder_name (str): [Name of folder to create]
+
+        Returns:
+            [str]: [ID of created folder]
+        """
         file_metadata = {
             'name': folder_name,
             'mimeType': 'application/vnd.google-apps.folder'
@@ -140,6 +149,15 @@ class GoogleDrive:
 
 
     async def download_file(self, file_id: str = None, file_name: str = None):
+        """[Download File]
+
+        Args:
+            file_id (str, optional): [Download by file ID]. Defaults to None.
+            file_name (str, optional): [Download by file name]. Defaults to None.
+
+        Returns:
+            [func]: [Returns private functions to download file]
+        """
         if file_id:
             return await self.__download_file_by_id(file_id=file_id)
         elif file_name:
@@ -147,6 +165,14 @@ class GoogleDrive:
 
 
     async def __download_file_by_id(self, file_id):
+        """[Download file by id]
+
+        Args:
+            file_id ([str]): [ID of file in Google Drive]
+
+        Returns:
+            [str]: [Status of file. Example: Downloaded or file not found]
+        """
         __file_name = None
 
         f = await self.list_files()
@@ -170,6 +196,15 @@ class GoogleDrive:
 
 
     async def __download_file_by_name(self, file_name):
+        """[Download file by name. By default it searches file with exact name. If founds calls private method to download this file by ID]
+
+        Args:
+            file_name ([str]): [Name of a file to download]
+
+        Returns:
+            [func]: [Returns private function to download file by ID]
+            [str]: [File not found]
+        """
 
         f = await self.list_files(
             q=f"name = '{file_name}'"
