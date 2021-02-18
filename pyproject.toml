@@ -15,7 +15,7 @@ keywords = [
     "Amazon S3"
 ]
 classifiers = [
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Software Development :: Libraries :: Python Modules :: Cloud Storages"
 ]
 
 [tool.poetry.dependencies]
