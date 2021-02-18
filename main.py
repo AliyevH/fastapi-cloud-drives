@@ -1,6 +1,6 @@
 from logging import debug
-from cloud_drives.google import GoogleDrive
-from config.google import Config
+from fastapi_cloud_drives.FastAPIGoogle import GoogleDrive
+from fastapi_cloud_drives.config import GDriveConfig
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -17,7 +17,7 @@ google_conf = {
         ]
 }
 
-config = Config(**google_conf)
+config = GDriveConfig(**google_conf)
 
 gdrive = GoogleDrive(config)
 
