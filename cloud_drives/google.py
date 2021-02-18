@@ -1,6 +1,6 @@
 from googleapiclient import discovery
-from googleapiclient.http import MediaFileUpload
-from httplib2 import Http
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
+from httplib2 import Http, io
 from googleapiclient.discovery import build
 from oauth2client import file, client, tools
 
@@ -51,13 +51,15 @@ class GoogleDrive:
     def build_service(self):
         self.drive_service = build('drive', 'v3', credentials=self.creds)
 
+
     async def list_files(self,
         q: str = "",
         corpora: str = "",
         includeItemsFromAllDrives: bool = False,
         supportsAllDrives: bool = False,
         pageSize: int = 100,
-        spaces: str = "drive"
+        spaces: str = "drive",
+        fields: str = None
     ):
         """[Get files from Google Drive]
     
@@ -93,11 +95,13 @@ class GoogleDrive:
                 includeItemsFromAllDrives=includeItemsFromAllDrives,
                 supportsAllDrives=supportsAllDrives,
                 pageSize=pageSize,
-                spaces=spaces
+                spaces=spaces,
+                fields=fields,
                 ).execute().get('files', [])
             return __file
         except Exception as err:
             return str(err)
+
 
     async def upload_file(self, filename: str, filepath: str, mimetype=None):
         __file = self.drive_service.files()
@@ -118,6 +122,7 @@ class GoogleDrive:
         except Exception as err:
             return str(err)
 
+
     async def create_folder(self, folder_name: str):
         file_metadata = {
             'name': folder_name,
@@ -131,3 +136,46 @@ class GoogleDrive:
             return __file.get("id")
         except Exception as err:
             return str(err)
+
+
+    async def download_file(self, file_id: str = None, file_name: str = None):
+        if file_id:
+            return await self.__download_file_by_id(file_id=file_id)
+        elif file_name:
+            return await self.__download_file_by_name(file_name=file_name)
+
+
+    async def __download_file_by_id(self, file_id):
+        __file_name = None
+
+        f = await self.list_files()
+        for i in f:
+            if i.get("id") == file_id:
+                __file_name = i.get("name")
+                break
+            
+        if not __file_name:
+            return "File not found"
+        
+        request = self.drive_service.files().get_media(fileId=file_id) 
+
+        fh = io.FileIO(__file_name, mode='wb')
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        while done is False:
+            status, done = downloader.next_chunk()
+
+        return f"{__file_name} downloaded"
+
+
+    async def __download_file_by_name(self, file_name):
+
+        f = await self.list_files(
+            q=f"name = '{file_name}'"
+        )
+        
+        if f:
+            return await self.__download_file_by_id(f[0].get("id"))
+
+        return "File not Found"
+        

@@ -39,6 +39,11 @@ async def create_folder():
     resp = await gdrive.create_folder(folder_name="Examples")
     return JSONResponse(status_code=200, content=resp)
 
+@app.get("/download_file")
+async def download_file():
+    r = await gdrive.download_file(file_name = "photo.jpeg")
+    return JSONResponse(status_code=200, content=r)
+
 
 if __name__ == "__main___":
     uvicorn.run(app, debug=True)
