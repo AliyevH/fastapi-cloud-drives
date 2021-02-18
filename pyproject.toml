@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "fastapi-cloud-drives"
-version = "0.1.0"
+version = "0.1.2"
 description = "Module for FastAPI to work with cloud drives"
 authors = ["Hasan Aliyev <hasan.aliyev.555@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/MadeByMads/fastapi-cloud-drives"
 
 [tool.poetry.dependencies]
 python = "^3.8"
