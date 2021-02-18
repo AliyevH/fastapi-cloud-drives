@@ -17,17 +17,17 @@ The FastAPI Cloud Drives module supports Google Drive, OneDrive, Dropbox cloud s
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-### Installing
 
+### 🔨 Installing
 ```bash
-pip install fastapi-cloud-drives
+poetry add fastapi-cloud-drives
 ```
 
-## 🎈 Usage <a name="usage"></a>
+### 💻 Usage <a name="usage"></a>
 
-
+### 
 See also the list of [contributors](https://github.com/MadeByMads/fastapi-cloud-drives/graphs/contributors) who participated in this project.
 
 
-## Contributing
+### 👀 Contributing
 We are open to  new ideas, additions. If you have any we would be happy to recieve and diccuss.

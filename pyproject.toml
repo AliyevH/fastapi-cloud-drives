@@ -1,11 +1,22 @@
 [tool.poetry]
 name = "fastapi-cloud-drives"
-version = "0.1.2"
+version = "0.1.3"
 description = "Module for FastAPI to work with cloud drives"
 authors = ["Hasan Aliyev <hasan.aliyev.555@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/MadeByMads/fastapi-cloud-drives"
+repository = "https://github.com/MadeByMads/fastapi-cloud-drives"
+keywords = [
+    "FastAPI",
+    "Google Drive",
+    "OneDrive",
+    "Dropbox",
+    "Amazon S3"
+]
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules :: Cloud Storages"
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -17,6 +28,9 @@ pydantic = "^1.7.3"
 fastapi = "^0.63.0"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/MadeByMads/fastapi-cloud-drives/issues"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
