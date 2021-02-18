@@ -1,10 +1,9 @@
 from logging import debug
-from fastapi_cloud_drives.fastapi_google import GoogleDrive
-from fastapi_cloud_drives.config import GoogleDriveConfig
+from fastapi_cloud_drives import GoogleDrive
+from fastapi_cloud_drives import GoogleDriveConfig
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-import uvicorn
 
 app = FastAPI()
 
@@ -41,7 +40,3 @@ async def create_folder():
 async def download_file():
     r = await gdrive.download_file(file_name = "photo.jpeg")
     return JSONResponse(status_code=200, content=r)
-
-
-if __name__ == "__main___":
-    uvicorn.run(app, debug=True)
