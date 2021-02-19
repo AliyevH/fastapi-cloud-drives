@@ -24,7 +24,7 @@ class GoogleDriveConfig(BaseSettings):
 
 
 class DropBoxConfig(BaseSettings):
-    DropBoxToken: str = Field(..., env='DropBoxToken')
-
+    DROPBOX_TOKEN: str = Field(..., env='DROPBOX_TOKEN')
+    
     class Config:
         case_sensitive = True
