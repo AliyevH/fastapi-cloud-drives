@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 
 google_conf = {
-    "CLIENT_ID_JSON" : "credentials.json",
+    "CLIENT_ID_JSON" : "client_id.json",
     "SCOPES": [
         "https://www.googleapis.com/auth/drive"
         ],
