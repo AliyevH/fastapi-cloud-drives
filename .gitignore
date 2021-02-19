@@ -10,9 +10,6 @@ token
 files
 credentials.json
 storage.json
-client_id.json
-fastapi_aws.csv
-
 # Distribution / packaging
 .Python
 build/
