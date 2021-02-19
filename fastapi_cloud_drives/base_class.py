@@ -27,6 +27,6 @@ class CloudStorageAbstractClass(ABC):
     def download_file(self):
         pass
 
-    @abstractmethod
-    def test(self):
-        pass
+    # @abstractmethod
+    # def test(self):
+    #     pass
