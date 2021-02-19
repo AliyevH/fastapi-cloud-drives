@@ -4,7 +4,7 @@ from fastapi_cloud_drives import GoogleDriveConfig
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-
+import os
 app = FastAPI()
 
 google_conf = {
@@ -12,7 +12,7 @@ google_conf = {
     "SCOPES": [
         "https://www.googleapis.com/auth/drive"
         ],
-    # "STORAGE_JSON": "/home/sabuhi/opt/fastapi-cloud-drives/storageger.json"
+    # "STORAGE_JSON": "/home/sabuhi/opt/fastapi-cloud-drives/storage.json"
 }
 
 config = GoogleDriveConfig(**google_conf)

@@ -30,3 +30,4 @@ class CloudStorageAbstractClass(ABC):
     @abstractclassmethod
     def list_all_buckets(self):
         pass
+
