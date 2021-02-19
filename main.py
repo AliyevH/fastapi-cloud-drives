@@ -8,10 +8,11 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 
 google_conf = {
-    "CLIENT_ID_JSON" : "token/client_id.json",
+    "CLIENT_ID_JSON" : "credentials.json",
     "SCOPES": [
         "https://www.googleapis.com/auth/drive"
-        ]
+        ],
+    # "STORAGE_JSON": "/home/sabuhi/opt/fastapi-cloud-drives/storageger.json"
 }
 
 config = GoogleDriveConfig(**google_conf)

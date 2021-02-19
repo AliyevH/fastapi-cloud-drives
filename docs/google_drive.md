@@ -39,12 +39,11 @@ uvicorn main:app --reload
 ### Example:
 
 ```python
-from fastapi_cloud_drives.FastAPIGoogle import GoogleDrive
-from fastapi_cloud_drives.config import GoogleDriveConfig
+from fastapi_cloud_drives import GoogleDrive
+from fastapi_cloud_drives import GoogleDriveConfig
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-import uvicorn
 
 google_conf = {
     "CLIENT_ID_JSON" : "client_id.json",
@@ -77,8 +76,8 @@ async def create_folder():
 
 @app.get("/download_file")
 async def download_file():
-    r = await gdrive.download_file(file_name = "photo.jpeg")
-    return JSONResponse(status_code=200, content=r)
+    resp = await gdrive.download_file(file_name = "photo.jpeg")
+    return JSONResponse(status_code=200, content=resp)
 ```
 
 ```CLIENT_ID_JSON``` is a file that you download from Google Cloud.
