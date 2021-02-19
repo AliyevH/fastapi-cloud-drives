@@ -10,22 +10,14 @@ from google.auth.transport.requests import Request
 from fastapi_cloud_drives.base_class import CloudStorageAbstractClass
 
 
-
-
 class GoogleDrive(CloudStorageAbstractClass):   
     def __init__(self, conf):
         self.STORAGE_JSON = conf.STORAGE_JSON or  "storage.json" 
-        self.get_storage_json()
         self.CLIENT_ID_JSON = conf.CLIENT_ID_JSON
         self.SCOPES = conf.SCOPES
         self.creds = None
 
         self.auth()
-        
-
-    def get_storage_json(self):
-       
-        print(self.STORAGE_JSON)
 
 
     def auth(self):

@@ -1,13 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractclassmethod, abstractmethod
+from abc import abstractproperty
  
 class CloudStorageAbstractClass(ABC):
- 
-    # def __init__(self):
-    #     super().__init__()
     
     @abstractmethod
     def auth(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def build_service(self):
@@ -27,4 +25,8 @@ class CloudStorageAbstractClass(ABC):
 
     @abstractmethod
     def download_file(self):
+        pass
+
+    @abstractmethod
+    def test(self):
         pass
