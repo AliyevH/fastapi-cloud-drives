@@ -9,10 +9,9 @@ from botocore.exceptions import ClientError
 
 
 class S3:   
-    def __init__(self, conf:dict):
+    def __init__(self, conf):
         self.session = boto3.session.Session()
         self.s3_client = boto3.resource("s3")
-        self.region = conf.get("region") or None
 
     async def upload_file(self, file_name: str, bucket: str, object_name=None, extra_args: dict=None):
         """Upload a file to an S3 bucket
