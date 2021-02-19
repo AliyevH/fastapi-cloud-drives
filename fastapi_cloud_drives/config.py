@@ -21,5 +21,3 @@ class GoogleDriveConfig(BaseSettings):
 
 
 
-def validate_path(path):
-    cur_dir = os.path.abspath(os.curdir)
