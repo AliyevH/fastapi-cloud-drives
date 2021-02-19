@@ -5,7 +5,7 @@ class CloudStorageAbstractClass(ABC):
     
     @abstractmethod
     def auth(self):
-        raise NotImplementedError
+        pass
 
     @abstractmethod
     def build_service(self):
@@ -27,6 +27,6 @@ class CloudStorageAbstractClass(ABC):
     def download_file(self):
         pass
 
-    @abstractmethod
-    def test(self):
+    @abstractclassmethod
+    def list_all_buckets(self):
         pass
