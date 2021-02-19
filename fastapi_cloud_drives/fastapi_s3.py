@@ -8,21 +8,13 @@ import boto3
 from botocore.exceptions import ClientError
 
 
-class S3(CloudStorageAbstractClass):   
-    def __init__(self, conf):
+class S3:   
+    def __init__(self, conf:dict):
+        self.session = boto3.session.Session()
         self.s3_client = boto3.resource("s3")
-        self.region = None
+        self.region = conf.get("region") or None
 
-    def auth(self):
-        pass
-
-    def build_service(self):
-        pass
-
-    def list_files(self):
-        pass
-
-    def upload_file(self, file_name, bucket, object_name=None, extra_args: dict=None):
+    async def upload_file(self, file_name: str, bucket: str, object_name=None, extra_args: dict=None):
         """Upload a file to an S3 bucket
 
         :param file_name: File to upload
@@ -33,16 +25,18 @@ class S3(CloudStorageAbstractClass):
 
         :return: True if file was uploaded, else False
         """
+        s3_client = boto3.client('s3')
+
         # If S3 object_name was not specified, use file_name
         if object_name is None:
             object_name = file_name
 
         # Upload the file
         try:
-            response = self.s3_client.upload_file(
-                file_name = file_name,
-                bucket = bucket,
-                object_name = object_name,
+            response = s3_client.upload_file(
+                file_name,
+                bucket,
+                object_name,
                 ExtraArgs = extra_args,
                 Callback=ProgressPercentage(file_name)
                 )
@@ -52,8 +46,10 @@ class S3(CloudStorageAbstractClass):
             return False
         return True
 
-    def download_file(self, bucket_name: str, file_name: str, object_name: str=None, extra_args: dict=None):
-        self.s3_clients3.download_file(
+    async def download_file(self, bucket_name: str, file_name: str, object_name: str=None, extra_args: dict=None):
+        s3_client = self.session.resource("s3")
+
+        s3_client.download_file(
             bucket_name,
             file_name,
             object_name,
@@ -61,19 +57,20 @@ class S3(CloudStorageAbstractClass):
             Callback=ProgressPercentage(file_name)
             )
 
-    def list_buckets(self):
+    async def list_buckets(self):
         """[List existing buckets]
 
         Returns:
             [dict]: [List of buckets]
         """
+        s3_client = self.session.resource("s3")
+
         buckets = []
-        for bucket in self.s3_client.buckets.all():
-            buckets.append(bucket)
-            print(bucket.name)
+        for bucket in s3_client.buckets.all():
+            buckets.append(bucket.name)
         return buckets
 
-    def create_bucket(self, bucket_name: str, region_name: str = None):
+    async def create_bucket(self, bucket_name: str):
         """Create an S3 bucket in a specified region
 
         If a region is not specified, the bucket is created in the S3 default
@@ -87,14 +84,15 @@ class S3(CloudStorageAbstractClass):
         :return: True if bucket created, else False
         """
         # Create bucket
+        s3_client = self.session.resource("s3")
         try:
             if self.region is None:
-                self.s3_client.create_bucket(Bucket=bucket_name)
+                s3_client.create_bucket(Bucket=bucket_name)
             else:
-                self.s3_client = boto3.client('s3', region_name=region_name)
-                location = {'LocationConstraint': region_name}
+                s3_client = boto3.client('s3', region_name=self.region)
+                location = {'LocationConstraint': self.region}
 
-                self.s3_client.create_bucket(
+                s3_client.create_bucket(
                     Bucket=bucket_name,
                     CreateBucketConfiguration=location
                     )
