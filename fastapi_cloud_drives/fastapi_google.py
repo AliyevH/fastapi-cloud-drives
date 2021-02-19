@@ -7,10 +7,12 @@ from oauth2client import file, client, tools
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
+from fastapi_cloud_drives.base_class import CloudStorageAbstractClass
 
 
 
-class GoogleDrive:   
+
+class GoogleDrive(CloudStorageAbstractClass):   
     def __init__(self, conf):
         self.STORAGE_JSON = conf.STORAGE_JSON or  "storage.json" 
         self.get_storage_json()
