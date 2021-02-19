@@ -8,6 +8,7 @@ __pycache__/
 token
 .vscode
 files
+storage.json
 
 # Distribution / packaging
 .Python
