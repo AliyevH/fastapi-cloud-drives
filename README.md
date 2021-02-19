@@ -19,10 +19,24 @@ The FastAPI Cloud Drives module supports Google Drive, OneDrive, Dropbox cloud s
 
 
 ### 🔨 Installing
+with poetry
+
 ```bash
+poetry init
+
+poetry shell
+
 poetry add fastapi-cloud-drives
 ```
+or pip
 
+```bash
+python3 -m venv .venv
+
+source .venv/bin/activate
+
+pip3 install fastapi-cloud-drives
+```
 ### 💻 Usage <a name="usage"></a>
 For using fastapi-google-drive use link below
 [FastAPI Google Drive](docs/google_drive.md)
