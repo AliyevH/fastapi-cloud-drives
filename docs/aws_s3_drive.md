@@ -26,6 +26,7 @@ If `~/.aws/credentials` and `~/.aws/config` exists you don't need additional set
 Only `AWS_DEFAULT_REGION` is required as environment or by argument to `S3Config` as shown in example below
 
 
+### Example:
 
 ```python
 from logging import debug
@@ -71,51 +72,3 @@ Run application:
 ```python
 uvicorn main:app --reload
 ```
-
-### Example:
-
-```python
-from fastapi_cloud_drives import GoogleDrive
-from fastapi_cloud_drives import GoogleDriveConfig
-
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-
-google_conf = {
-    "CLIENT_ID_JSON" : "client_id.json",
-    "SCOPES": [
-        "https://www.googleapis.com/auth/drive"
-        ]
-}
-
-config = GoogleDriveConfig(**google_conf)
-
-app = FastAPI()
-
-@app.get("/list_files")
-async def list_files():
-    f = await gdrive.list_files()
-    return JSONResponse(status_code=200, content=f)
-
-@app.get("/upload_file")
-async def upload_file():
-    resp = await gdrive.upload_file(
-        filename = "photo.jpg",
-        filepath = "files/photo.jpg",
-    )
-    return JSONResponse(status_code=200, content=resp)
-
-@app.get("/create_folder")
-async def create_folder():
-    resp = await gdrive.create_folder(folder_name="Examples")
-    return JSONResponse(status_code=200, content=resp)
-
-@app.get("/download_file")
-async def download_file():
-    resp = await gdrive.download_file(file_name = "photo.jpeg")
-    return JSONResponse(status_code=200, content=resp)
-```
-
-```CLIENT_ID_JSON``` is a file that you download from Google Cloud.
-
-For more information about ```SCOPES``` go to: https://developers.google.com/identity/protocols/oauth2/scopes
