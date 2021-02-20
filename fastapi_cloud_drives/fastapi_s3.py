@@ -1,4 +1,3 @@
-from fastapi_cloud_drives.base_class import CloudStorageAbstractClass
 import os
 import sys
 import threading
@@ -6,25 +5,32 @@ import threading
 import logging
 import boto3
 from botocore.exceptions import ClientError
+from oauth2client import file
+from pathlib import Path
 
 
 class S3:   
     def __init__(self, conf):
+        self.region = conf.AWS_DEFAULT_REGION
         self.session = boto3.session.Session()
-        self.s3_client = boto3.resource("s3")
+        self.s3_resource = self.session.resource("s3")
+        self.s3_client = boto3.client("s3", self.region)
 
-    async def upload_file(self, file_name: str, bucket: str, object_name=None, extra_args: dict=None):
-        """Upload a file to an S3 bucket
 
-        :param file_name: File to upload
-        :param bucket: Bucket to upload to
-        :param object_name: S3 object name. If not specified then file_name is used
-        :param extra_args: Metadata to attach to file. 
-        :For information about Metadata: https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-uploading-files.html
+    async def upload_file(self, file_name: Path, bucket_name: str, object_name=None, extra_args: dict=None):
+        """[summary]
 
-        :return: True if file was uploaded, else False
+        Args:
+            file_name (Path): [Path to file]
+            bucket_name (str): [Bucket to upload to]
+            object_name ([type], optional): [S3 object name. If not specified then file_name is used]. Defaults to None.
+            extra_args (dict, optional): [https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-uploading-files.html]. Defaults to None.
+
+        Returns:
+            [type]: [description]
         """
-        s3_client = boto3.client('s3')
+       
+        __s3_bucket = self.s3_resource.Bucket(bucket_name)
 
         # If S3 object_name was not specified, use file_name
         if object_name is None:
@@ -32,29 +38,40 @@ class S3:
 
         # Upload the file
         try:
-            response = s3_client.upload_file(
+            __s3_bucket.upload_file(
                 file_name,
-                bucket,
                 object_name,
                 ExtraArgs = extra_args,
                 Callback=ProgressPercentage(file_name)
                 )
-            print("response", response)
         except ClientError as e:
             logging.error(e)
             return False
-        return True
+        return {object_name: "Uploaded"}
 
-    async def download_file(self, bucket_name: str, file_name: str, object_name: str=None, extra_args: dict=None):
-        s3_client = self.session.resource("s3")
+    async def download_file(self, bucket_name: str, file_name: Path, object_name: str, extra_args: dict=None):
+        """[Download file from Bucket]
 
-        s3_client.download_file(
-            bucket_name,
-            file_name,
-            object_name,
-            ExtraArgs = extra_args,
-            Callback=ProgressPercentage(file_name)
-            )
+        Args:
+            bucket_name (str): [Name of bucket to download from.]
+            file_name (Path): [file_name is used to write bytes of object downloaded from bucket]
+            object_name (str): [real object name located in bucket].
+            extra_args (dict, optional): [description]. Defaults to None.
+        """
+        __s3_bucket = self.s3_resource.Bucket(bucket_name)
+        
+        try:
+            with open(file_name, 'wb') as f:
+                __s3_bucket.download_file(
+                    file_name,
+                    object_name
+                )
+                # self.s3_client.download_fileobj(bucket_name, object_name, f)
+        except Exception as err:
+            logging.error(err)
+            return str(err)
+        return {object_name: "Downloaded"}
+        
 
     async def list_buckets(self):
         """[List existing buckets]
@@ -62,10 +79,8 @@ class S3:
         Returns:
             [dict]: [List of buckets]
         """
-        s3_client = self.session.resource("s3")
-
         buckets = []
-        for bucket in s3_client.buckets.all():
+        for bucket in self.s3_resource.buckets.all():
             buckets.append(bucket.name)
         return buckets
 
@@ -83,15 +98,14 @@ class S3:
         :return: True if bucket created, else False
         """
         # Create bucket
-        s3_client = self.session.resource("s3")
+        # s3_resource = self.session.resource("s3")
         try:
             if self.region is None:
-                s3_client.create_bucket(Bucket=bucket_name)
+                self.s3_resource.create_bucket(Bucket=bucket_name)
             else:
-                s3_client = boto3.client('s3', region_name=self.region)
                 location = {'LocationConstraint': self.region}
 
-                s3_client.create_bucket(
+                self.s3_resource.create_bucket(
                     Bucket=bucket_name,
                     CreateBucketConfiguration=location
                     )
