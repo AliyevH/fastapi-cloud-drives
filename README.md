@@ -12,7 +12,7 @@
 
 ## 🧐 About <a name = "about"></a>
 
-The FastAPI Cloud Drives module supports Google Drive, OneDrive, Dropbox cloud storage providers. You can easily search, upload, download files from this cloud providers. 
+The FastAPI Cloud Drives module supports AWS S3, Google Drive, Dropbox cloud storage providers. You can easily search, upload, download files from this cloud providers.  
 
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
@@ -37,10 +37,14 @@ source .venv/bin/activate
 
 pip3 install fastapi-cloud-drives
 ```
-### 💻 Usage <a name="usage"></a>
-For using fastapi-google-drive use link below
+### 💻 Google-Drive <a name="google-drive"></a>
+For using fastapi-google-drive use link
 [FastAPI Google Drive](docs/google_drive.md)
 
+
+### 💻 AWS S3 <a name="aws-s3"></a>
+For using fastapi-s3-drive use link
+[FastAPI AWS S3](docs/aws_s3_drive.md)
 
 ### 
 See also the list of [contributors](https://github.com/MadeByMads/fastapi-cloud-drives/graphs/contributors) who participated in this project.
