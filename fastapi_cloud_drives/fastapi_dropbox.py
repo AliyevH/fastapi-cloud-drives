@@ -1,20 +1,24 @@
 import dropbox
 import os, re
-import aiofiles
-
+from collections import defaultdict
 class DropBox():   
 
     def __init__(self, conf):
         self.DROPBOX_TOKEN = conf.DROPBOX_TOKEN
     
         self.client = self.auth()
+
         # self.get_refresh_token()
 
-    def __enter__(self):
+
+    async def __aenter__(self):
         return self
 
-    def __exit__(self, *args):
+    async def __aexit__(self, *args):
         self.client.close() 
+
+
+   
     
     def auth(self):
         return dropbox.Dropbox(self.DROPBOX_TOKEN)
@@ -32,10 +36,34 @@ class DropBox():
         print("nEW",new_token)
 
 
-    def account_info(self):
-        return self.client.users_get_current_account()
+    async def account_info(self):
+        temp = defaultdict(dict)
+        
+        result =  self.client.users_get_current_account()
 
-    def list_files(self,
+        
+        temp["abbreviated_name"] = result.name.abbreviated_name
+        temp["display_name"] = result.name.display_name
+        temp["familiar_name"] = result.name.familiar_name
+        temp["given_name"] = result.name.given_name
+        temp["surname"] = result.name.surname
+
+        temp['account_id']  = result.account_id
+        temp['country'] = result.country
+        temp['disabled'] = result.disabled
+        temp['email'] = result.email
+        temp['email_verified'] = result.email_verified
+        temp['is_paired'] = result.is_paired
+        temp['locale'] = result.locale
+      
+        temp['profile_photo_url']  = result.profile_photo_url
+        temp['referral_link'] = result.referral_link
+        temp['team']  = result.team
+        temp['team_member_id'] = result.team_member_id
+        return temp
+       
+
+    async def list_files(self,
         path,
         recursive=False,
         include_media_info= False,
@@ -71,7 +99,7 @@ class DropBox():
          
         return temp
 
-    def upload_file(self, file_from, file_to ):
+    async def upload_file(self, file_from, file_to):
         
         with  open(file_from, 'rb') as f:
 
@@ -80,7 +108,7 @@ class DropBox():
        
 
     
-    def save_file_localy(self, file_path,filename):
+    async def save_file_localy(self, file_path,filename):
 
         metadata, res = self.client.files_download(file_path+filename)
 
@@ -88,13 +116,13 @@ class DropBox():
             f.write(res.content)
 
 
-    def get_link_of_file(self, file_path, filename, dowload=False):
+    async def get_link_of_file(self, file_path, filename, dowload=False):
         
         path = self.client.sharing_create_shared_link(file_path+filename)
         if dowload:
             path = path.url.replace("0", "1")
 
-        return path.url
+        return {"file":path.url}
 
 
 

@@ -26,9 +26,6 @@ class GoogleDriveConfig(BaseSettings):
         raise AutherizeGoogleClient("File for authorizing does not exists")
 
 
-
-
-
 class DropBoxConfig(BaseSettings):
     DROPBOX_TOKEN: str = Field(..., env='DROPBOX_TOKEN')
     APP_KEY: str =  Field(..., env='APP_KEY')
