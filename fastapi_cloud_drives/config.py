@@ -26,6 +26,18 @@ class GoogleDriveConfig(BaseSettings):
         raise AutherizeGoogleClient("File for authorizing does not exists")
 
 
+
+
+
+class DropBoxConfig(BaseSettings):
+    DROPBOX_TOKEN: str = Field(..., env='DROPBOX_TOKEN')
+    APP_KEY: str =  Field(..., env='APP_KEY')
+    APP_SECRET: str = Field(...,env='APP_SECRET')
+
+    class Config:
+        case_sensitive = True
+    
+
 class S3Config(BaseSettings):
     AWS_ACCESS_KEY_ID:                  str = Field(None, env="AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY:              str = Field(None, env="AWS_SECRET_ACCESS_KEY")
@@ -36,3 +48,4 @@ class S3Config(BaseSettings):
     class Config:
         case_sensitive = True
    
+

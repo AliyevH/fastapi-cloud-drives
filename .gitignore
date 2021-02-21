@@ -10,9 +10,6 @@ token
 files
 credentials.json
 storage.json
-client_id.json
-fastapi_aws.csv
-
 # Distribution / packaging
 .Python
 build/
@@ -33,6 +30,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+test.py
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
