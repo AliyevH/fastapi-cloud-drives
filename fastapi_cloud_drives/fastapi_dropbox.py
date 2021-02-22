@@ -1,15 +1,19 @@
 import dropbox
 import os, re
 from collections import defaultdict
-class DropBox():   
+import asyncio
+from dropbox import DropboxOAuth2FlowNoRedirect
+
+from fastapi_cloud_drives.config import  DropBoxConfig
+class DropBox:   
 
     def __init__(self, conf):
-        self.DROPBOX_TOKEN = conf.DROPBOX_TOKEN
-    
+        self.DROPBOX_ACCESS_TOKEN = conf.DROPBOX_ACCESS_TOKEN
+        self.APP_KEY= conf.APP_KEY
+        self.APP_SECRET= conf.APP_SECRET
+        self.DROPBOX_REFRESH_TOKEN = conf.DROPBOX_REFRESH_TOKEN
+
         self.client = self.auth()
-
-        # self.get_refresh_token()
-
 
     async def __aenter__(self):
         return self
@@ -17,23 +21,14 @@ class DropBox():
     async def __aexit__(self, *args):
         self.client.close() 
 
-
-   
     
     def auth(self):
-        return dropbox.Dropbox(self.DROPBOX_TOKEN)
 
+        if not self.DROPBOX_REFRESH_TOKEN:
 
-    def get_refresh_token(self):
-        
-       
-        old_token = self.client._oauth2_access_token
-        self.client.check_and_refresh_access_token()
-        new_token = self.client._oauth2_access_token
-        # dbx = dropbox.Dropbox(self.DROPBOX_TOKEN, oauth2_refresh_token=, app_key=conf.APP_KEY, app_secret=conf.APP_SECRET)
-
-        print("OLD",old_token)
-        print("nEW",new_token)
+            return dropbox.Dropbox(self.DROPBOX_ACCESS_TOKEN,app_key=self.APP_KEY,app_secret=self.APP_SECRET)
+      
+        return dropbox.Dropbox(oauth2_access_token=self.DROPBOX_ACCESS_TOKEN, oauth2_refresh_token=self.DROPBOX_REFRESH_TOKEN, app_key=self.APP_KEY,app_secret=self.APP_SECRET)
 
 
     async def account_info(self):
@@ -123,7 +118,4 @@ class DropBox():
             path = path.url.replace("0", "1")
 
         return {"file":path.url}
-
-
-
 
