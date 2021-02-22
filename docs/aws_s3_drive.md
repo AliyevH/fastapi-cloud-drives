@@ -65,6 +65,13 @@ async def download_file():
         object_name="fastapi.txt"    # object_name: Name of file to save in S3 Bucket
         )
     return JSONResponse(status_code=200, content=f)
+
+@app.get("/list_objects")
+async def list_objects():
+    page_iterator = await s3_client.list_objects(bucket_name="fastapibucket")
+    for page in page_iterator:
+        print(page.get("Contents"))
+    return JSONResponse(status_code=200)
 ```
 
 ### Step 3
