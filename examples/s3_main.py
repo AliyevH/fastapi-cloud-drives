@@ -1,4 +1,6 @@
 from logging import debug
+
+from botocore.serialize import JSONSerializer
 from fastapi_cloud_drives import S3
 
 from fastapi import FastAPI
@@ -39,3 +41,10 @@ async def download_file():
         object_name="fastapi.txt"
         )
     return JSONResponse(status_code=200, content=f)
+
+@app.get("/list_objects")
+async def list_objects():
+    page_iterator = await s3_client.list_objects(bucket_name="fastapibucket")
+    for page in page_iterator:
+        print(page.get("Contents"))
+    return JSONResponse(status_code=200)
