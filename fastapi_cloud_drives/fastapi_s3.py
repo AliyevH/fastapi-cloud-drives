@@ -116,6 +116,29 @@ class S3:
         return True
 
 
+    async def list_objects(self, bucket_name, prefix: str=None):
+        """[List objects in Bucket]
+
+        Args:
+            bucket_name ([str]): [Name of Bucket]
+            prefix (str, optional): [Prefix parameter used to filter the paginated results by prefix server-side before sending them to the client]. Defaults to None.
+
+        Returns:
+            [Iterator]: [PageIterator]
+        """
+
+        operation_parameters = {"Bucket": bucket_name}
+
+        if prefix:
+            operation_parameters = operation_parameters["Prefix"] =  prefix
+
+        paginator = self.s3_client.get_paginator('list_objects')
+
+        page_iterator = paginator.paginate(**operation_parameters)
+
+        return page_iterator
+
+
 class ProgressPercentage(object):
 
     def __init__(self, filename):
