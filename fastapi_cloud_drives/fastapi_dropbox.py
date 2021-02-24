@@ -23,6 +23,12 @@ class DropBox:
 
     
     def auth(self):
+        '''
+        Authentication done via OAuth2 
+        You can generate tken for yourself in the App Console.
+        See <https://blogs.dropbox.com/developers/2014/05/generate-an-access-token-for-your-own-account/>
+        Authentication step  initially it is done with ACCESS_TOKEN, as it is short lived it will expire soon. Therefore better to have Refresh token
+        '''
 
         if not self.DROPBOX_REFRESH_TOKEN:
 
@@ -32,6 +38,10 @@ class DropBox:
 
 
     async def account_info(self):
+        '''
+        Account information of the current user
+        '''
+
         temp = defaultdict(dict)
         
         result =  self.client.users_get_current_account()
@@ -71,6 +81,21 @@ class DropBox:
         include_non_downloadable_files=True
         ):
         
+        '''
+        path:   
+
+        recursive: 
+        include_media_info:
+        include_deleted: 
+        include_has_explicit_shared_members:
+        include_mounted_folders:
+        limit:
+        shared_link:
+        include_property_groups:
+        include_non_downloadable_files:
+
+        '''
+        
         response = self.client.files_list_folder(
                     path=path,
                     recursive=recursive,
@@ -84,15 +109,18 @@ class DropBox:
                     include_non_downloadable_files=include_non_downloadable_files)
         temp ={}
         
+        try:
+            for file in response.entries:
 
-        for file in response.entries:
+                link = self.client.sharing_create_shared_link(file.path_display)
+        
+                path = link.url.replace("0", "1")
+                temp[file.path_display] = path
+            
+            return temp
 
-            link = self.client.sharing_create_shared_link(file.path_display)
-     
-            path = link.url.replace("0", "1")
-            temp[file.path_display] = path
-         
-        return temp
+        except  Exception as er:
+            print(er)
 
     async def upload_file(self, file_from, file_to):
         
