@@ -36,9 +36,12 @@ def dropbox_auth_start(session):
 def dropbox_auth_finish(session, request):
     try:
         response = dropbox_auth_flow(session).finish(request.query_params)
+        
+        os.environ['DROPBOX_REFRESH_TOKEN'] = response.refresh_token
+        os.environ['DROPBOX_ACCESS_TOKEN'] = response.access_token
 
-        os.environ['REFRESH_TOKEN'] = response.refresh_token
         conf.DROPBOX_REFRESH_TOKEN =  response.refresh_token
+        conf.DROPBOX_ACCESS_TOKEN =  response.access_token
 
         return JSONResponse(status_code=200, content={"result": True})
 
